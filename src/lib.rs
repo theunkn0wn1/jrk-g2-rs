@@ -1,3 +1,4 @@
+#![no_std]
 use core::fmt;
 use embedded_hal::{blocking::i2c, serial};
 use nb::block;
