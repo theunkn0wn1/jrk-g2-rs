@@ -40,17 +40,17 @@ where
     }
     pub fn write(&mut self, data: &[u8]) -> Result<(), JrkError> {
         if self.use_i2c {
-            block!(self.i2c.write(self.device, &data)).map_err(|_e| JrkError {});
+            block!(self.i2c.write(self.device, &data)).ok();
         } else {
             for &b in data.iter() {
-                block!(self.ser.write(b)).map_err(|_e| JrkError {});
+                block!(self.ser.write(b)).ok();
             }
         }
         Ok(())
     }
     pub fn read(&mut self, cmd: VarOffset) -> Result<u16, JrkError> {
         self.write(&[JrkG2Command::GetVariable16 as u8 | (cmd as u8 + 1)])
-            .map_err(|_e| JrkError {});
+            .ok();
         if self.use_i2c {
             let mut buf: [u8; 2] = [0, 0];
             block!(self.i2c.read(self.device, &mut buf)).map_err(|_e| JrkError {})?;
