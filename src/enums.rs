@@ -1,3 +1,4 @@
+// Copy-Paste from https://github.com/pololu/jrk-g2-arduino/blob/master/JrkG2.h
 #[allow(dead_code)]
 pub enum VarOffset {
     Input = 0x00,              // u16
