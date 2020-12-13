@@ -4,7 +4,7 @@ use embedded_hal::{blocking::i2c, serial};
 use nb::block;
 
 mod enums;
-use enums::{JrkG2Command, VarOffset};
+pub use enums::{JrkG2Command, VarOffset};
 
 pub struct JrkError;
 
