@@ -9,3 +9,9 @@ edition = "2018"
 [dependencies]
 embedded-hal = "0.2.4"
 nb = "1.0.0"
+
+[dev-dependencies]
+cortex-m = "0.6.4"
+cortex-m-rt = "0.6.13"
+panic-halt = "0.2.0"
+stm32f1xx-hal = { version = "0.6.1", features = ["rt", "stm32f103", "medium"]}

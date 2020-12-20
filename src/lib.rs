@@ -1,4 +1,5 @@
 #![no_std]
+use core::fmt;
 use core::marker::PhantomData;
 use embedded_hal::{blocking::i2c, serial};
 use nb::block;
@@ -13,6 +14,7 @@ where
 {
     I2c(I2cError),
     Serial(Serial::Error),
+    Format(fmt::Error),
 }
 
 pub struct JrkBoard<I2c, Tx, Rx, I2cError> {
@@ -86,10 +88,66 @@ where
     pub fn stop_motor(&mut self) -> Result<(), Error<I2cError, Rx>> {
         self.write(&[JrkG2Command::MotorOff as u8])
     }
-
-    pub fn switch(&mut self) -> bool {
-        self.config.use_i2c = !self.config.use_i2c;
-        self.config.use_i2c
+    pub fn switch_to_i2c(&mut self) {
+        self.config.use_i2c = true;
+    }
+    pub fn switch_to_serial(&mut self) {
+        self.config.use_i2c = false;
+    }
+    pub fn show_state<W: fmt::Write>(&mut self, f: &mut W) -> Result<(), Error<I2cError, Rx>> {
+        if self.config.use_i2c {
+            f.write_fmt(format_args!("Reading Jrk state from I2C:"))
+                .map_err(Error::Format)?;
+        } else {
+            f.write_fmt(format_args!("Reading Jrk state from serial:"))
+                .map_err(Error::Format)?;
+        }
+        f.write_fmt(format_args!("Input: {}", self.read(VarOffset::Input)?))
+            .map_err(Error::Format)?;
+        f.write_fmt(format_args!("Target: {}", self.read(VarOffset::Target)?))
+            .map_err(Error::Format)?;
+        f.write_fmt(format_args!(
+            "Feedback: {}",
+            self.read(VarOffset::Feedback)?
+        ))
+        .map_err(Error::Format)?;
+        f.write_fmt(format_args!(
+            "ScaledFeedback: {}",
+            self.read(VarOffset::ScaledFeedback)?
+        ))
+        .map_err(Error::Format)?;
+        f.write_fmt(format_args!(
+            "Integral: {}",
+            self.read(VarOffset::Integral)?
+        ))
+        .map_err(Error::Format)?;
+        f.write_fmt(format_args!(
+            "DutyCycleTarget: {}",
+            self.read(VarOffset::DutyCycleTarget)?
+        ))
+        .map_err(Error::Format)?;
+        f.write_fmt(format_args!(
+            "PIDPeriodCount: {}",
+            self.read(VarOffset::PIDPeriodCount)?
+        ))
+        .map_err(Error::Format)?;
+        f.write_fmt(format_args!(
+            "ErrorFlagsHalting: {}",
+            self.read(VarOffset::ErrorFlagsHalting)?
+        ))
+        .map_err(Error::Format)?;
+        f.write_fmt(format_args!(
+            "ErrorFlagsOccurred: {}",
+            self.read(VarOffset::ErrorFlagsOccurred)?
+        ))
+        .map_err(Error::Format)?;
+        f.write_fmt(format_args!(
+            "VinVoltage: {}",
+            self.read(VarOffset::VinVoltage)?
+        ))
+        .map_err(Error::Format)?;
+        f.write_fmt(format_args!("Current: {}", self.read(VarOffset::Current)?))
+            .map_err(Error::Format)
     }
 }
 
