@@ -1,7 +1,7 @@
-//! Get state from Jrk on a STM32f1xx
+//! Get state and start/stop motor on a Jrk with a STM32f1xx
 //!
-//! In this example, the Jrk is plugged as follow:
-//! SCL is on PB8, SDA on PB9, TX on PB10, RX on PB11
+//! In this example, the Jrk is connected on I2C:
+//! SCL is on PB8, SDA on PB9
 //!
 //! PA9 & PA10 are used as a serial monitor
 
@@ -9,16 +9,13 @@
 #![no_std]
 #![no_main]
 
-use panic_halt as _;
-
 use core::fmt::Write;
-
-use nb::block;
-
 use cortex_m_rt::entry;
+use nb::block;
+use panic_halt as _;
 use stm32f1xx_hal::{i2c, pac, prelude::*, serial, timer::Timer};
 
-use jrk_g2_rs::{Config, JrkBoard};
+use jrk_g2_rs::{JrkBoard, JrkBoardI2c};
 
 #[entry]
 fn main() -> ! {
@@ -36,12 +33,12 @@ fn main() -> ! {
     let mut gpiob = dp.GPIOB.split(&mut rcc.apb2);
 
     // Initialize USART1 on PA9 & PA10 for monitoring
-    let pin_tx = gpioa.pa9.into_alternate_push_pull(&mut gpioa.crh);
-    let pin_rx = gpioa.pa10;
+    let tx = gpioa.pa9.into_alternate_push_pull(&mut gpioa.crh);
+    let rx = gpioa.pa10;
 
     let serial = serial::Serial::usart1(
         dp.USART1,
-        (pin_tx, pin_rx),
+        (tx, rx),
         &mut afio.mapr,
         serial::Config::default().baudrate(115_200.bps()),
         clocks,
@@ -51,14 +48,14 @@ fn main() -> ! {
     writeln!(tx, "serial monitor initialized").unwrap();
 
     // Initialize connexion to the Jrk: I2C1 on PB8 & PB9 and USART3 on PB10 & PB11
-    let jrk_scl = gpiob.pb8.into_alternate_open_drain(&mut gpiob.crh);
-    let jrk_sda = gpiob.pb9.into_alternate_open_drain(&mut gpiob.crh);
+    let scl = gpiob.pb8.into_alternate_open_drain(&mut gpiob.crh);
+    let sda = gpiob.pb9.into_alternate_open_drain(&mut gpiob.crh);
     let jrk_tx = gpiob.pb10.into_alternate_push_pull(&mut gpiob.crh);
     let jrk_rx = gpiob.pb11;
 
-    let jrk_i2c = i2c::BlockingI2c::i2c1(
+    let i2c = i2c::BlockingI2c::i2c1(
         dp.I2C1,
-        (jrk_scl, jrk_sda),
+        (scl, sda),
         &mut afio.mapr,
         i2c::Mode::Fast {
             frequency: 400_000.hz(),
@@ -81,16 +78,22 @@ fn main() -> ! {
         &mut rcc.apb1,
     );
 
-    let (jrk_tx, jrk_rx) = jrk_ser.split();
+    let (_jrk_tx, _jrk_rx) = jrk_ser.split();
 
-    let mut jrk = JrkBoard::new(Config::default(), jrk_i2c, jrk_tx, jrk_rx);
+    let mut jrk = JrkBoardI2c::new(i2c);
     writeln!(tx, "Jrk initialized").unwrap();
 
     loop {
-        jrk.switch_to_i2c();
-        jrk.show_state(&mut tx).ok();
-        jrk.switch_to_serial();
-        jrk.show_state(&mut tx).ok();
+        if let Err(e) = jrk.stop_motor() {
+            write!(tx, "I2cError: {:?}", e).ok();
+        }
         block!(timer.wait()).unwrap();
+        jrk.show_vars(&mut tx).ok();
+
+        if let Err(e) = jrk.set_target(1500) {
+            write!(tx, "I2cError: {:?}", e).ok();
+        }
+        block!(timer.wait()).unwrap();
+        jrk.show_vars(&mut tx).ok();
     }
 }

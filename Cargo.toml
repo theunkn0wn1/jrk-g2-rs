@@ -3,8 +3,7 @@ name = "jrk-g2-rs"
 version = "0.1.0"
 authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+readme = "README.md"
 
 [dependencies]
 embedded-hal = "0.2.4"
@@ -14,4 +13,9 @@ nb = "1.0.0"
 cortex-m = "0.6.4"
 cortex-m-rt = "0.6.13"
 panic-halt = "0.2.0"
-stm32f1xx-hal = { version = "0.6.1", features = ["rt", "stm32f103", "medium"]}
+stm32f1xx-hal = { version = "0.7.0", features = ["rt", "stm32f103", "medium"]}
+
+[profile.release]
+codegen-units = 1 # better optimizations
+debug = true # symbols are nice and they don't increase the size on Flash
+lto = true # better optimizations
