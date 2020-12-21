@@ -14,6 +14,8 @@ where
     pub fn new(i2c: I2c) -> Self {
         JrkG2I2c { device: 0x0B, i2c }
     }
+    /// The controller have a default 0x0B I2C address, but this can be manually changed in the
+    /// configuration utility.
     pub fn set_device(&mut self, device: u8) {
         self.device = device;
     }
