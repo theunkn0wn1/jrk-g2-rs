@@ -1,5 +1,8 @@
 # pololu Jrk G2 rust driver
 
+- Product page: https://www.pololu.com/product/3147
+- Arduino Driver: https://github.com/pololu/jrk-g2-arduino
+
 ## Example with a STM 32:
 
 ```
