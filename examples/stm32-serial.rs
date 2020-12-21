@@ -78,10 +78,8 @@ fn main() -> ! {
         &mut rcc.apb1,
     );
 
-    let (jrk_tx, jrk_rx) = jrk_ser.split();
-
-    let mut jrk = JrkG2Serial::new(jrk_tx, jrk_rx);
-    writeln!(tx, "Jrk initialized").unwrap();
+    let mut jrk = JrkG2Serial::new(jrk_ser);
+    writeln!(tx, "Jrk initialized on stm32 by serial").unwrap();
 
     loop {
         if let Err(e) = jrk.stop_motor() {
@@ -90,7 +88,7 @@ fn main() -> ! {
         block!(timer.wait()).unwrap();
         jrk.show_vars(&mut tx).ok();
 
-        if let Err(e) = jrk.set_target(1500) {
+        if let Err(e) = jrk.set_target(1350) {
             write!(tx, "SerialError: {:?}", e).ok();
         }
         block!(timer.wait()).unwrap();

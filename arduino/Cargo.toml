@@ -1,0 +1,14 @@
+[package]
+name = "jrk-g2-rs-arduino"
+version = "0.1.0"
+authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
+edition = "2018"
+readme = "README.md"
+
+[dependencies]
+arduino-uno = { git = "https://github.com/Rahix/avr-hal", rev = "d17a441a667dd65e5a9be75b0e71d1beadf93e84" }
+avr-device = "0.2.2"
+ufmt = "0.1.0"
+panic-halt = "0.2.0"
+jrk-g2-rs = { path = ".." }
+embedded-hal = "0.2.4"

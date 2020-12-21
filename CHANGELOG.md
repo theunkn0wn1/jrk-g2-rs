@@ -7,5 +7,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Split main struct into JrkBoardI2c / JrkBoardSerial
-- Added examples for i²c & serial with a stm32
+- Split main struct into a JrkG2 trait implemented by JrkG2I2c / JrkG2BlockingI2c / JrkG2Serial
+- Added examples for i²c / serial with stm32 / rpi / arduino

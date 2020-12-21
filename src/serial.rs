@@ -1,42 +1,37 @@
 use crate::enums::{JrkG2Command, VarOffset};
 use crate::jrk::JrkG2;
-use core::fmt;
 use embedded_hal::serial;
 use nb::block;
 
-pub struct JrkG2Serial<Tx, Rx> {
-    tx: Tx,
-    rx: Rx,
+pub struct JrkG2Serial<Serial> {
+    serial: Serial,
 }
 
-impl<Tx, Rx> JrkG2Serial<Tx, Rx>
+impl<Serial> JrkG2Serial<Serial>
 where
-    Tx: serial::Write<u8>,
-    Rx: serial::Read<u8>,
+    Serial: serial::Write<u8> + serial::Read<u8>,
 {
-    pub fn new(tx: Tx, rx: Rx) -> Self {
-        JrkG2Serial { tx, rx }
+    pub fn new(serial: Serial) -> Self {
+        JrkG2Serial { serial }
     }
 }
 
-impl<Rx, Tx> JrkG2<Rx::Error> for JrkG2Serial<Tx, Rx>
+impl<Serial> JrkG2<<Serial as serial::Read<u8>>::Error> for JrkG2Serial<Serial>
 where
-    Tx: serial::Write<u8>,
-    Rx: serial::Read<u8>,
+    Serial: serial::Read<u8> + serial::Write<u8>,
 {
-    fn write(&mut self, data: &[u8]) -> Result<(), Rx::Error> {
+    const HEADER: &'static str = "Reading Jrk state from Serial:\n";
+
+    fn write(&mut self, data: &[u8]) -> Result<(), <Serial as serial::Read<u8>>::Error> {
         for &b in data.iter() {
-            block!(self.tx.write(b)).ok(); // infaillible
+            block!(self.serial.write(b)).ok(); // Infallible
         }
         Ok(())
     }
-    fn read(&mut self, cmd: VarOffset) -> Result<u16, Rx::Error> {
+    fn read(&mut self, cmd: VarOffset) -> Result<u16, <Serial as serial::Read<u8>>::Error> {
         self.write(&[JrkG2Command::GetVariable16 as u8 | (cmd as u8 + 1)])?;
-        let l = block!(self.rx.read())?;
-        let h = block!(self.rx.read())?;
+        let l = block!(self.serial.read())?;
+        let h = block!(self.serial.read())?;
         Ok(l as u16 + h as u16 * 256)
-    }
-    fn show_vars_header<W: fmt::Write>(&mut self, f: &mut W) {
-        f.write_str("Reading Jrk state from Serial:\n").ok();
     }
 }

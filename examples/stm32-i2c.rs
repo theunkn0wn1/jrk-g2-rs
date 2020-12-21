@@ -15,7 +15,7 @@ use nb::block;
 use panic_halt as _;
 use stm32f1xx_hal::{i2c, pac, prelude::*, serial, timer::Timer};
 
-use jrk_g2_rs::{JrkG2, JrkG2I2c};
+use jrk_g2_rs::{JrkG2, JrkG2BlockingI2c};
 
 #[entry]
 fn main() -> ! {
@@ -80,8 +80,8 @@ fn main() -> ! {
 
     let (_jrk_tx, _jrk_rx) = jrk_ser.split();
 
-    let mut jrk = JrkG2I2c::new(i2c);
-    writeln!(tx, "Jrk initialized").unwrap();
+    let mut jrk = JrkG2BlockingI2c::new(i2c);
+    writeln!(tx, "Jrk initialized on stm32 by i2c").unwrap();
 
     loop {
         if let Err(e) = jrk.stop_motor() {
@@ -90,7 +90,7 @@ fn main() -> ! {
         block!(timer.wait()).unwrap();
         jrk.show_vars(&mut tx).ok();
 
-        if let Err(e) = jrk.set_target(1500) {
+        if let Err(e) = jrk.set_target(1400) {
             write!(tx, "I2cError: {:?}", e).ok();
         }
         block!(timer.wait()).unwrap();
