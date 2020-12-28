@@ -5,7 +5,7 @@ authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
 edition = "2018"
 readme = "README.md"
 license = "BSD-2-Clause"
-description = "A rust embedded driver for pololuu Jrk G2"
+description = "A rust embedded driver for pololu Jrk G2"
 
 [features]
 default = []
