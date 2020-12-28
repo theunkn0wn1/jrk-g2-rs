@@ -1,6 +1,6 @@
 # pololu Jrk G2 rust driver
 
-![doc](https://docs.rs/jrk-g2-rs/badge.svg)
+[![doc](https://docs.rs/jrk-g2-rs/badge.svg)](https://docs.rs/jrk-g2-rs)
 
 - Product page: https://www.pololu.com/product/3147
 - Arduino Driver: https://github.com/pololu/jrk-g2-arduino
