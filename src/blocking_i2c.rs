@@ -3,6 +3,7 @@ use crate::jrk::JrkG2;
 use embedded_hal::blocking::i2c;
 use nb::block;
 
+/// Implement the JrkG2 trait for Blocking I2C
 pub struct JrkG2BlockingI2c<I2c> {
     device: u8,
     i2c: I2c,

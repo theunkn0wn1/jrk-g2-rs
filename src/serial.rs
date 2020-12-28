@@ -3,6 +3,7 @@ use crate::jrk::JrkG2;
 use embedded_hal::serial;
 use nb::block;
 
+/// Implement the JrkG2 trait for Serial
 pub struct JrkG2Serial<Serial> {
     serial: Serial,
 }

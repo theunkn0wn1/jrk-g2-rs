@@ -1,6 +1,7 @@
 // Copy-Paste from https://github.com/pololu/jrk-g2-arduino/blob/master/JrkG2.h
 use ufmt::derive::uDebug;
 
+/// This enum defines the variables that can be read from the Jrk G2
 #[allow(dead_code)]
 #[derive(uDebug, Debug, Copy, Clone)]
 pub enum VarOffset {

@@ -2,6 +2,7 @@ use crate::enums::{JrkG2Command, VarOffset};
 use crate::jrk::JrkG2;
 use embedded_hal::blocking::i2c;
 
+/// Implement the JrkG2 trait for I2C
 pub struct JrkG2I2c<I2c> {
     device: u8,
     i2c: I2c,

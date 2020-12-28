@@ -3,6 +3,8 @@ use ufmt::{uWrite, uwriteln};
 
 use crate::enums::{JrkG2Command, VarOffset};
 
+/// Trait that defines common operations for the Jrk G2, and has to be implemented for any
+/// particular communication bus (currently available: Serial / I2C / Blocking I2C).
 pub trait JrkG2<ComError> {
     const HEADER: &'static str;
 
