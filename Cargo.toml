@@ -1,9 +1,11 @@
 [package]
 name = "jrk-g2-rs"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
 edition = "2018"
 readme = "README.md"
+license = "BSD-2-Clause"
+description = "A rust embedded driver for pololuu Jrk G2"
 
 [features]
 default = []
