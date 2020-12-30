@@ -3,9 +3,13 @@ name = "jrk-g2-rs"
 version = "1.0.0"
 authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
 edition = "2018"
-readme = "README.md"
-license = "BSD-2-Clause"
 description = "A rust embedded driver for pololu Jrk G2"
+documentation = "https://docs.rs/jrk-g2-rs"
+readme = "README.md"
+repository = "https://github.com/nim65s/jrk-g2-rs"
+license = "BSD-2-Clause"
+categories = ["embedded", "hardware-support", "no-std", "science::robotics"]
+exclude = ["arduino", "memory.x"]
 
 [features]
 default = []
