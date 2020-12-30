@@ -1,6 +1,6 @@
 [package]
 name = "jrk-g2-rs"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
 edition = "2018"
 description = "A rust embedded driver for pololu Jrk G2"
