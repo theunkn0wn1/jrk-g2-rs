@@ -13,4 +13,7 @@ mod blocking_i2c;
 pub use blocking_i2c::JrkG2BlockingI2c;
 
 mod serial;
+#[cfg(feature = "async_trait")]
+mod non_blocking;
+
 pub use serial::JrkG2Serial;
