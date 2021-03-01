@@ -5,7 +5,7 @@ use nb::block;
 
 /// Implement the JrkG2 trait for Serial
 pub struct JrkG2Serial<Serial> {
-    serial: Serial,
+    pub serial: Serial,
 }
 
 impl<Serial> JrkG2Serial<Serial>
